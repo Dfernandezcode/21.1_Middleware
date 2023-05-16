@@ -1,1 +1,1 @@
-# node-s7-validation-and-cors
+# node-s7-solution-validation-and-cors

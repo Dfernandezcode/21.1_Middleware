@@ -1,8 +1,10 @@
 const express = require("express");
 
 // Modelos
-const { Brand } = require("../models/Brand.js");
+const { Author } = require("../models/Author.js");
+const { Book } = require("../models/Book.js");
 
+// Router propio de authors
 const router = express.Router();
 
 // CRUD: READ
@@ -11,23 +13,22 @@ router.get("/", async (req, res) => {
     // Asi leemos query params
     const page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
-    const brands = await Brand.find()
+    const authors = await Author.find()
       .limit(limit)
       .skip((page - 1) * limit);
 
     // Num total de elementos
-    const totalElements = await Brand.countDocuments();
+    const totalElements = await Author.countDocuments();
 
     const response = {
       totalItems: totalElements,
       totalPages: Math.ceil(totalElements / limit),
       currentPage: page,
-      data: brands,
+      data: authors,
     };
 
     res.json(response);
   } catch (error) {
-    console.error(error);
     res.status(500).json(error);
   }
 });
@@ -36,31 +37,21 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const brand = await Brand.findById(id);
-    if (brand) {
-      res.json(brand);
+    const author = await Author.findById(id);
+
+    if (author) {
+      const temporalAuthor = author.toObject();
+      const includeBooks = req.query.includeBooks === "true";
+      if (includeBooks) {
+        const books = await Book.find({ author: id });
+        temporalAuthor.books = books;
+      }
+
+      res.json(temporalAuthor);
     } else {
       res.status(404).json({});
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json(error);
-  }
-});
-
-// CRUD: Operación custom, no es CRUD
-router.get("/name/:name", async (req, res) => {
-  const brandName = req.params.name;
-
-  try {
-    const brand = await Brand.find({ name: new RegExp("^" + brandName.toLowerCase(), "i") });
-    if (brand?.length) {
-      res.json(brand);
-    } else {
-      res.status(404).json([]);
-    }
-  } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 });
@@ -68,9 +59,9 @@ router.get("/name/:name", async (req, res) => {
 // CRUD: CREATE
 router.post("/", async (req, res) => {
   try {
-    const brand = new Brand(req.body);
-    const createdBrand = await brand.save();
-    return res.status(201).json(createdBrand);
+    const author = new Author(req.body);
+    const createdAuthor = await author.save();
+    return res.status(201).json(createdAuthor);
   } catch (error) {
     console.error(error);
     if (error?.name === "ValidationError") {
@@ -85,14 +76,13 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const brandDeleted = await Brand.findByIdAndDelete(id);
-    if (brandDeleted) {
-      res.json(brandDeleted);
+    const authorDeleted = await Author.findByIdAndDelete(id);
+    if (authorDeleted) {
+      res.json(authorDeleted);
     } else {
       res.status(404).json({});
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json(error);
   }
 });
@@ -101,9 +91,9 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const brandUpdated = await Brand.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-    if (brandUpdated) {
-      res.json(brandUpdated);
+    const authorUpdated = await Author.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+    if (authorUpdated) {
+      res.json(authorUpdated);
     } else {
       res.status(404).json({});
     }
@@ -117,4 +107,4 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-module.exports = { brandRouter: router };
+module.exports = { authorRouter: router };

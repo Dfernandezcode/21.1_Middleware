@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Iniciar el programa",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/normalization/brand.normalization.js"
+      "program": "${workspaceFolder}/index.js"
     }
   ]
 }

@@ -1,17 +1,18 @@
 {
-  "name": "s3-mongoose-intro",
+  "name": "node-s4-solution-complete-crud",
   "version": "1.0.0",
   "description": "Mongoo first steps",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "normalize:brands": "node ./normalization/brand.normalization.js ",
-    "seed:users": "node ./seeds/user.seed.js",
-    "seed:cars": "node ./seeds/car.seed.js",
-    "seed:brands": "node ./seeds/brand.seed.js",
-    "seed:car-relations": "node ./seeds/car-relations.seed.js",
-    "seed:all": "npm run seed:users && npm run seed:cars && npm run seed:brands && npm run seed:car-relations",
-    "start": "node --watch index.js",
+    "normalize:books": "node ./normalization/book.normalization.js ",
+    "normalize:authors": "node ./normalization/author.normalization.js ",
+    "seed:authors": "node ./seeds/author.seed.js",
+    "seed:books": "node ./seeds/book.seed.js",
+    "seed:book-relations": "node ./seeds/book-relations.seed.js",
+    "seed:all": "npm run seed:authors && npm run seed:books && npm run seed:book-relations",
+    "start:watch": "nodemon index.js",
+    "start": "node index.js",
     "lint": "eslint",
     "prepare": "husky install"
   },
@@ -30,6 +31,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^7.0.3"
+    "mongoose": "^7.0.3",
+    "nodemon": "^2.0.22"
   }
 }

@@ -2,21 +2,23 @@ import "./App.css";
 import React from "react";
 
 function App() {
-  const apiUrl = "https://node-s7-validation-and-cors.vercel.app/brand";
-  const [brands, setBrands] = React.useState();
+  const apiUrl = "https://node-s7-solution-validation-and-cors.vercel.app/book";
+  const [books, setBooks] = React.useState();
 
   React.useEffect(() => {
     fetch(apiUrl)
-      .then((brands) => brands.json())
-      .then((brandsParsed) => setBrands(brandsParsed));
+      .then((books) => books.json())
+      .then((booksParsed) => setBooks(booksParsed));
   }, []);
 
   return (
     <div className="App">
-      <h2>Marcas:</h2>
+      <h2>Libros:</h2>
       <ul>
-        {brands?.data?.map((brand) => (
-          <li key={brand._id}>{brand.name}</li>
+        {books?.data?.map((book) => (
+          <li key={book._id}>
+            {book.title} ({book.author.name})
+          </li>
         ))}
       </ul>
     </div>

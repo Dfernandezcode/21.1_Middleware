@@ -1,20 +1,19 @@
 const express = require("express");
-const { userRouter } = require("./routes/user.routes.js");
-const { carRouter } = require("./routes/car.routes.js");
-const { brandRouter } = require("./routes/brand.routes.js");
+const { bookRouter } = require("./routes/book.routes.js");
+const { authorRouter } = require("./routes/author.routes.js");
+const { connect } = require("./db.js");
 const cors = require("cors");
 
 const main = async () => {
   // Conexión a la BBDD
-  const { connect } = require("./db.js");
   const database = await connect();
 
-  // Configuración del server
+  // Configuración del app
   const PORT = 3000;
-  const server = express();
-  server.use(express.json());
-  server.use(express.urlencoded({ extended: false }));
-  server.use(
+  const app = express();
+  app.use(express.json()); // server.use = app.use
+  app.use(express.urlencoded({ extended: false }));
+  app.use(
     cors({
       origin: "http://localhost:3000",
     })
@@ -23,21 +22,39 @@ const main = async () => {
   // Rutas
   const router = express.Router();
   router.get("/", (req, res) => {
-    res.send(`Esta es la home de nuestra API. Estamos utilizando la BBDD de ${database.connection.name} `);
+    res.send(`Esta es la home de nuestra API. Conectados a la BBDD ${database.connection.name}`);
   });
   router.get("*", (req, res) => {
     res.status(404).send("Lo sentimos :( No hemos encontrado la página solicitada.");
   });
 
-  // Usamos las rutas
-  server.use("/user", userRouter);
-  server.use("/car", carRouter);
-  server.use("/brand", brandRouter);
-  server.use("/", router);
+  // Application Middlewares
+  app.use((req, res, next) => {
+    const date = new Date();
+    console.log(`Petición de tipo ${req.method} a la url ${req.originalUrl} el ${date}`);
+    next();
+  });
 
-  server.listen(PORT, () => {
-    console.log(`Server levantado en el puerto ${PORT}`);
+  // Acepta /book/*
+  app.use("/book", (req, res, next) => {
+    console.log("Me han pedido libros!!");
+    next();
+  });
+
+  // Usamos las rutas
+  app.use("/book", bookRouter);
+  app.use("/author", authorRouter);
+  app.use("/", router);
+
+  app.listen(PORT, () => {
+    console.log(`app levantado en el puerto ${PORT}`);
   });
 };
 
 main();
+
+/* TYPES OF MIDDLEWARE */
+
+// Middleware for applications.
+// Middleware for routes.
+// Middleware for errors.
