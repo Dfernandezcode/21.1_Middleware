@@ -8,7 +8,28 @@ const router = express.Router();
 
 // CRUD: READ
 // EJEMPLO DE REQ: http://localhost:3000/book?page=1&limit=10
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
+  // DO NOT FORGET TO DEFINE "NEXT" in the parameters
+  console.log("We are in the middleware /book to check parameters");
+
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+  if (!isNaN(page) && !isNaN(limit) && page > 0 && limit > 0) {
+    req.query.page = page;
+    req.query.limit = limit;
+    next();
+  } else {
+    console.log("Parámetros no válidos:");
+    console.log(JSON.stringify(req.query));
+    res.status(400).json({ error: "parameters: page or limit are not valid" });
+  }
+
+  console.log(page);
+  console.log(limit);
+});
+
+router.get("/", async (req, res, next) => {
   try {
     // Asi leemos query params
     const page = parseInt(req.query.page);
@@ -29,7 +50,7 @@ router.get("/", async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    res.status(500).json(error);
+    next(error);
   }
 });
 

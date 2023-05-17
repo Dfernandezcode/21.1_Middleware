@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
 });
 
 // CRUD: READ
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const author = await Author.findById(id);
@@ -52,7 +52,10 @@ router.get("/:id", async (req, res) => {
       res.status(404).json({});
     }
   } catch (error) {
-    res.status(500).json(error);
+    // console.error(error);
+    // res.status(500).json(error); - not needed with (next(error))
+
+    next(error);
   }
 });
 
@@ -73,7 +76,7 @@ router.post("/", async (req, res) => {
 });
 
 // CRUD: DELETE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const authorDeleted = await Author.findByIdAndDelete(id);
@@ -83,7 +86,7 @@ router.delete("/:id", async (req, res) => {
       res.status(404).json({});
     }
   } catch (error) {
-    res.status(500).json(error);
+    next(error);
   }
 });
 
