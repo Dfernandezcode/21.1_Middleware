@@ -1,4 +1,9 @@
 const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+
+// define multer destination folder.
+const upload = multer({ dest: "public" });
 
 // Modelos
 const { Author } = require("../models/Author.js");
@@ -107,6 +112,34 @@ router.put("/:id", async (req, res) => {
     } else {
       res.status(500).json(error);
     }
+  }
+});
+
+// Upload author profile picture code.
+router.post("/profile-upload", upload.single("profile"), async (req, res, next) => {
+  try {
+    // Renombrado de la imagen
+    const originalname = req.file.originalname;
+    const path = req.file.path;
+    const newPath = path + "_" + originalname;
+    fs.renameSync(path, newPath);
+
+    // Busqueda de la marca
+    const authorId = req.body.authorId;
+    const author = await Author.findById(authorId);
+
+    if (author) {
+      author.logoImage = newPath;
+      await author.save();
+      res.json(author);
+
+      console.log("author modified correctly!");
+    } else {
+      fs.unlinkSync(newPath);
+      res.status(404).send("author not found");
+    }
+  } catch (error) {
+    next(error);
   }
 });
 

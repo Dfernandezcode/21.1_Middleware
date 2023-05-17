@@ -20,6 +20,10 @@ const authorSchema = new Schema(
       uppercase: true,
       trim: true,
     },
+    profileImage: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
