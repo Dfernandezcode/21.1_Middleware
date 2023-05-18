@@ -7,7 +7,7 @@ const authorNormalization = async () => {
     await connect();
     console.log("Conexíón realizada correctamente.");
 
-    const authors = await Author.find();
+    const authors = await Author.find().select("+password");
     console.log(`Hemos recuperado ${authors.length} autores de la base de datos`);
 
     // Actualizamos los campos según las reglas de negocio que queramos

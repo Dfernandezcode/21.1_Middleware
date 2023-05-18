@@ -19,3 +19,20 @@ Error handling: Middleware can catch errors that occur during the processing of 
 Applying cross-cutting concerns: Middleware allows you to apply common functionality across multiple routes or applications. For example, you can add middleware to handle CORS headers, compression, caching, or rate limiting.
 
 By utilizing middleware, you can modularize and reuse code, keep your routes focused on specific tasks, and add layers of functionality to your application's request-response flow. Middleware provides flexibility and extensibility to your web application, making it easier to add new features and maintain existing ones.
+
+# Notes 21.2
+
+<----------------------Email and User passwords---------------------------->
+
+Use npm i validator to run validation checks on user emails/passwords.
+
+# const user = await User.findById(id).select("+password");
+
+this line of code allows us to find passwords when doing find by id petitions.
+
+----------- Unsecure login requests.
+
+    -usually done with post.
+    -401 error is usually done for incorrect passwords.
+
+----------- Encrypting passwords with "brcypt".
